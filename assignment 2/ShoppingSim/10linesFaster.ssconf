@@ -1,0 +1,8 @@
+numLines: 10
+minCheckerSpeed: 0.1
+maxCheckerSpeed: 1
+customerRate: 1
+maxItems: 10
+deltaT: 0.00001
+drawDelta: 0.5
+customerTrackCount: 100
