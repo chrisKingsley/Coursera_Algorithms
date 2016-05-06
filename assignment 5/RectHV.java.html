@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang = "en">
+
+<head>
+
+<link rel="icon"          href="http://algs4.cs.princeton.edu/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="http://algs4.cs.princeton.edu/favicon.ico" type="image/x-icon">
+<link rel="stylesheet"    href="http://algs4.cs.princeton.edu/java.css" type="text/css">
+
+<title>RectHV.java</title>
+
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<meta NAME="AUTHOR" CONTENT="Robert Sedgewick and Kevin Wayne">
+<meta NAME="DESCRIPTION" CONTENT="RectHV code in Java">
+<meta NAME="TITLE" CONTENT="RectHV code in Java">
+<meta NAME="KEYWORDS" CONTENT="RectHV,java,programming,computer science,algorithm,data structure,program,code">
+<meta NAME="ROBOTS" CONTENT="INDEX,FOLLOW">
+
+</head>
+
+
+<body>
+<center><h1>RectHV.java</h1></center><p><br>
+
+Below is the syntax highlighted version of <a href = "RectHV.java">RectHV.java</a>
+from <a href = "http://algs4.cs.princeton.edu/code">&#167; Algorithms</a>.
+<p><br>
+
+<!-- Generator: GNU source-highlight 3.1.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span class="comment">/*************************************************************************</span>
+<span class="comment"> *  Compilation:  javac RectHV.java</span>
+<span class="comment"> *  Execution:    java RectHV</span>
+<span class="comment"> *  Dependencies: Point2D.java</span>
+<span class="comment"> *</span>
+<span class="comment"> *  Implementation of 2D axis-aligned rectangle.</span>
+<span class="comment"> *</span>
+<span class="comment"> *************************************************************************/</span>
+
+<span class="keyword">public</span><span class="normal"> </span><span class="keyword">class</span><span class="normal"> </span><span class="classname">RectHV</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">    </span><span class="keyword">private</span><span class="normal"> </span><span class="keyword">final</span><span class="normal"> </span><span class="type">double</span><span class="normal"> xmin</span><span class="symbol">,</span><span class="normal"> ymin</span><span class="symbol">;</span><span class="normal">   </span><span class="comment">// minimum x- and y-coordinates</span>
+<span class="normal">    </span><span class="keyword">private</span><span class="normal"> </span><span class="keyword">final</span><span class="normal"> </span><span class="type">double</span><span class="normal"> xmax</span><span class="symbol">,</span><span class="normal"> ymax</span><span class="symbol">;</span><span class="normal">   </span><span class="comment">// maximum x- and y-coordinates</span>
+
+<span class="normal">    </span><span class="comment">// construct the axis-aligned rectangle [xmin, xmax] x [ymin, ymax]</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="function">RectHV</span><span class="symbol">(</span><span class="type">double</span><span class="normal"> xmin</span><span class="symbol">,</span><span class="normal"> </span><span class="type">double</span><span class="normal"> ymin</span><span class="symbol">,</span><span class="normal"> </span><span class="type">double</span><span class="normal"> xmax</span><span class="symbol">,</span><span class="normal"> </span><span class="type">double</span><span class="normal"> ymax</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">xmax </span><span class="symbol">&lt;</span><span class="normal"> xmin </span><span class="symbol">||</span><span class="normal"> ymax </span><span class="symbol">&lt;</span><span class="normal"> ymin</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">            </span><span class="keyword">throw</span><span class="normal"> </span><span class="keyword">new</span><span class="normal"> </span><span class="function">IllegalArgumentException</span><span class="symbol">(</span><span class="string">"Invalid rectangle"</span><span class="symbol">);</span>
+<span class="normal">        </span><span class="cbracket">}</span>
+<span class="normal">        </span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">xmin </span><span class="symbol">=</span><span class="normal"> xmin</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">ymin </span><span class="symbol">=</span><span class="normal"> ymin</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">xmax </span><span class="symbol">=</span><span class="normal"> xmax</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">ymax </span><span class="symbol">=</span><span class="normal"> ymax</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// accessor methods for 4 coordinates</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">double</span><span class="normal"> </span><span class="function">xmin</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> xmin</span><span class="symbol">;</span><span class="normal"> </span><span class="cbracket">}</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">double</span><span class="normal"> </span><span class="function">ymin</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> ymin</span><span class="symbol">;</span><span class="normal"> </span><span class="cbracket">}</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">double</span><span class="normal"> </span><span class="function">xmax</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> xmax</span><span class="symbol">;</span><span class="normal"> </span><span class="cbracket">}</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">double</span><span class="normal"> </span><span class="function">ymax</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> ymax</span><span class="symbol">;</span><span class="normal"> </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// width and height of rectangle</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">double</span><span class="normal"> </span><span class="function">width</span><span class="symbol">()</span><span class="normal">  </span><span class="cbracket">{</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> xmax </span><span class="symbol">-</span><span class="normal"> xmin</span><span class="symbol">;</span><span class="normal"> </span><span class="cbracket">}</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">double</span><span class="normal"> </span><span class="function">height</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> ymax </span><span class="symbol">-</span><span class="normal"> ymin</span><span class="symbol">;</span><span class="normal"> </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// does this axis-aligned rectangle intersect that one?</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">boolean</span><span class="normal"> </span><span class="function">intersects</span><span class="symbol">(</span><span class="usertype">RectHV</span><span class="normal"> that</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        </span><span class="keyword">return</span><span class="normal"> </span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">xmax </span><span class="symbol">&gt;=</span><span class="normal"> that</span><span class="symbol">.</span><span class="normal">xmin </span><span class="symbol">&amp;&amp;</span><span class="normal"> </span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">ymax </span><span class="symbol">&gt;=</span><span class="normal"> that</span><span class="symbol">.</span><span class="normal">ymin</span>
+<span class="normal">            </span><span class="symbol">&amp;&amp;</span><span class="normal"> that</span><span class="symbol">.</span><span class="normal">xmax </span><span class="symbol">&gt;=</span><span class="normal"> </span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">xmin </span><span class="symbol">&amp;&amp;</span><span class="normal"> that</span><span class="symbol">.</span><span class="normal">ymax </span><span class="symbol">&gt;=</span><span class="normal"> </span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">ymin</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// draw this axis-aligned rectangle</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">void</span><span class="normal"> </span><span class="function">draw</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        StdDraw</span><span class="symbol">.</span><span class="function">line</span><span class="symbol">(</span><span class="normal">xmin</span><span class="symbol">,</span><span class="normal"> ymin</span><span class="symbol">,</span><span class="normal"> xmax</span><span class="symbol">,</span><span class="normal"> ymin</span><span class="symbol">);</span>
+<span class="normal">        StdDraw</span><span class="symbol">.</span><span class="function">line</span><span class="symbol">(</span><span class="normal">xmax</span><span class="symbol">,</span><span class="normal"> ymin</span><span class="symbol">,</span><span class="normal"> xmax</span><span class="symbol">,</span><span class="normal"> ymax</span><span class="symbol">);</span>
+<span class="normal">        StdDraw</span><span class="symbol">.</span><span class="function">line</span><span class="symbol">(</span><span class="normal">xmax</span><span class="symbol">,</span><span class="normal"> ymax</span><span class="symbol">,</span><span class="normal"> xmin</span><span class="symbol">,</span><span class="normal"> ymax</span><span class="symbol">);</span>
+<span class="normal">        StdDraw</span><span class="symbol">.</span><span class="function">line</span><span class="symbol">(</span><span class="normal">xmin</span><span class="symbol">,</span><span class="normal"> ymax</span><span class="symbol">,</span><span class="normal"> xmin</span><span class="symbol">,</span><span class="normal"> ymin</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// distance from p to closest point on this axis-aligned rectangle</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">double</span><span class="normal"> </span><span class="function">distanceTo</span><span class="symbol">(</span><span class="usertype">Point2D</span><span class="normal"> p</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        </span><span class="keyword">return</span><span class="normal"> Math</span><span class="symbol">.</span><span class="function">sqrt</span><span class="symbol">(</span><span class="keyword">this</span><span class="symbol">.</span><span class="function">distanceSquaredTo</span><span class="symbol">(</span><span class="normal">p</span><span class="symbol">));</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// distance squared from p to closest point on this axis-aligned rectangle</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">double</span><span class="normal"> </span><span class="function">distanceSquaredTo</span><span class="symbol">(</span><span class="usertype">Point2D</span><span class="normal"> p</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        </span><span class="type">double</span><span class="normal"> dx </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0.0</span><span class="symbol">,</span><span class="normal"> dy </span><span class="symbol">=</span><span class="normal"> </span><span class="number">0.0</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal">      </span><span class="symbol">(</span><span class="normal">p</span><span class="symbol">.</span><span class="function">x</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&lt;</span><span class="normal"> xmin</span><span class="symbol">)</span><span class="normal"> dx </span><span class="symbol">=</span><span class="normal"> p</span><span class="symbol">.</span><span class="function">x</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> xmin</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">else</span><span class="normal"> </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">p</span><span class="symbol">.</span><span class="function">x</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&gt;</span><span class="normal"> xmax</span><span class="symbol">)</span><span class="normal"> dx </span><span class="symbol">=</span><span class="normal"> p</span><span class="symbol">.</span><span class="function">x</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> xmax</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal">      </span><span class="symbol">(</span><span class="normal">p</span><span class="symbol">.</span><span class="function">y</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&lt;</span><span class="normal"> ymin</span><span class="symbol">)</span><span class="normal"> dy </span><span class="symbol">=</span><span class="normal"> p</span><span class="symbol">.</span><span class="function">y</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> ymin</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">else</span><span class="normal"> </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">p</span><span class="symbol">.</span><span class="function">y</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&gt;</span><span class="normal"> ymax</span><span class="symbol">)</span><span class="normal"> dy </span><span class="symbol">=</span><span class="normal"> p</span><span class="symbol">.</span><span class="function">y</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">-</span><span class="normal"> ymax</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">return</span><span class="normal"> dx</span><span class="symbol">*</span><span class="normal">dx </span><span class="symbol">+</span><span class="normal"> dy</span><span class="symbol">*</span><span class="normal">dy</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// does this axis-aligned rectangle contain p?</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">boolean</span><span class="normal"> </span><span class="function">contains</span><span class="symbol">(</span><span class="usertype">Point2D</span><span class="normal"> p</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        </span><span class="keyword">return</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">p</span><span class="symbol">.</span><span class="function">x</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&gt;=</span><span class="normal"> xmin</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">&amp;&amp;</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">p</span><span class="symbol">.</span><span class="function">x</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&lt;=</span><span class="normal"> xmax</span><span class="symbol">)</span>
+<span class="normal">            </span><span class="symbol">&amp;&amp;</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">p</span><span class="symbol">.</span><span class="function">y</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&gt;=</span><span class="normal"> ymin</span><span class="symbol">)</span><span class="normal"> </span><span class="symbol">&amp;&amp;</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">p</span><span class="symbol">.</span><span class="function">y</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">&lt;=</span><span class="normal"> ymax</span><span class="symbol">);</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// are the two axis-aligned rectangles equal?</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="type">boolean</span><span class="normal"> </span><span class="function">equals</span><span class="symbol">(</span><span class="usertype">Object</span><span class="normal"> y</span><span class="symbol">)</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">y </span><span class="symbol">==</span><span class="normal"> </span><span class="keyword">this</span><span class="symbol">)</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> </span><span class="keyword">true</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">y </span><span class="symbol">==</span><span class="normal"> </span><span class="keyword">null</span><span class="symbol">)</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> </span><span class="keyword">false</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">y</span><span class="symbol">.</span><span class="function">getClass</span><span class="symbol">()</span><span class="normal"> </span><span class="symbol">!=</span><span class="normal"> </span><span class="keyword">this</span><span class="symbol">.</span><span class="function">getClass</span><span class="symbol">())</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> </span><span class="keyword">false</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="usertype">RectHV</span><span class="normal"> that </span><span class="symbol">=</span><span class="normal"> </span><span class="symbol">(</span><span class="normal">RectHV</span><span class="symbol">)</span><span class="normal"> y</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">xmin </span><span class="symbol">!=</span><span class="normal"> that</span><span class="symbol">.</span><span class="normal">xmin</span><span class="symbol">)</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> </span><span class="keyword">false</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">ymin </span><span class="symbol">!=</span><span class="normal"> that</span><span class="symbol">.</span><span class="normal">ymin</span><span class="symbol">)</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> </span><span class="keyword">false</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">xmax </span><span class="symbol">!=</span><span class="normal"> that</span><span class="symbol">.</span><span class="normal">xmax</span><span class="symbol">)</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> </span><span class="keyword">false</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">if</span><span class="normal"> </span><span class="symbol">(</span><span class="keyword">this</span><span class="symbol">.</span><span class="normal">ymax </span><span class="symbol">!=</span><span class="normal"> that</span><span class="symbol">.</span><span class="normal">ymax</span><span class="symbol">)</span><span class="normal"> </span><span class="keyword">return</span><span class="normal"> </span><span class="keyword">false</span><span class="symbol">;</span>
+<span class="normal">        </span><span class="keyword">return</span><span class="normal"> </span><span class="keyword">true</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="normal">    </span><span class="comment">// return a string representation of this axis-aligned rectangle</span>
+<span class="normal">    </span><span class="keyword">public</span><span class="normal"> </span><span class="usertype">String</span><span class="normal"> </span><span class="function">toString</span><span class="symbol">()</span><span class="normal"> </span><span class="cbracket">{</span>
+<span class="normal">        </span><span class="keyword">return</span><span class="normal"> </span><span class="string">"["</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> xmin </span><span class="symbol">+</span><span class="normal"> </span><span class="string">", "</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> xmax </span><span class="symbol">+</span><span class="normal"> </span><span class="string">"] x ["</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> ymin </span><span class="symbol">+</span><span class="normal"> </span><span class="string">", "</span><span class="normal"> </span><span class="symbol">+</span><span class="normal"> ymax </span><span class="symbol">+</span><span class="normal"> </span><span class="string">"]"</span><span class="symbol">;</span>
+<span class="normal">    </span><span class="cbracket">}</span>
+
+<span class="cbracket">}</span>
+</tt></pre>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-10811519-2");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+</body>
+
+<p><br><address><small>
+Copyright &copy; 2002&ndash;2010, Robert Sedgewick and Kevin Wayne.
+<br>Last updated: Sat Sep  8 20:04:35 EDT 2012.
+</small></address>
+
+</html>

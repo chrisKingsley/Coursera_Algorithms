@@ -16,4 +16,13 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+# large data files in assignment 5
+assignment 5/kdtree/input100K.txt
+assignment 5/kdtree/input1600k.txt
+assignment 5/kdtree/input1M.txt
+assignment 5/kdtree/input200K.txt
+assignment 5/kdtree/input3200k.txt
+assignment 5/kdtree/input400K.txt
+assignment 5/kdtree/input800K.txt
+assignment 5/kdtree/input80K.txt
 
