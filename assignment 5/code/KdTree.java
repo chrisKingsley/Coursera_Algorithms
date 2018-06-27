@@ -1,7 +1,3 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class KdTree {
@@ -26,26 +22,20 @@ public class KdTree {
 	
 	// is the set empty?
 	public boolean isEmpty() {
-		return root.N == 0;
+		return size(root) == 0;
 	}
+	
 	// number of points in the set
 	public int size() {
 		return size(root);
 	}
-	
 	public int size(Node x) {
 		if (x == null)
 			return 0;
 		return x.N;
 	}
 	
-	
-	// add the point p to the set (if it is not already in the set)
-	public void insert(Point2D p) {
-		// Search for key. Update value if found; grow table if new.
-		root = insert(root, p, 1);
-	}
-	
+	// compare points, with depth in the tree determining which dimension to use
 	private int comparePoints(Point2D h, Point2D p, int depth) {
 		int cmpX = Double.compare(h.x(), p.x()),
 				cmpY = Double.compare(h.y(), p.y());
@@ -55,6 +45,11 @@ public class KdTree {
 			return cmpY != 0.0 ? cmpY : cmpX;
 	}
 	
+	// add the point p to the set (if it is not already in the set)
+	public void insert(Point2D p) {
+		// Search for key. Update value if found; grow table if new.
+		root = insert(root, p, 1);
+	}
 	private Node insert(Node h, Point2D p, int depth) {
 		// Do standard insert, with red link to parent.
 		if (h == null)
@@ -74,7 +69,20 @@ public class KdTree {
 
 	// does the set contain the point p?
 	public boolean contains(Point2D p) {
-		return true;
+		return contains(root, p, 1);
+	}
+	private boolean contains(Node h, Point2D p, int depth) {
+		if(h == null)
+			return false;
+		else {		
+			int cmp = comparePoints(h.key, p, depth);
+			if(cmp == 0)
+				return true;
+			else if(cmp < 0)
+				return contains(h.left, p, depth + 1);
+			else
+				return contains(h.right, p, depth + 1);	
+		}
 	}
 
 	// draw all of the points to standard draw
@@ -105,12 +113,13 @@ public class KdTree {
 	        h.key.draw();
 		}
 	}
-
-	private void printTree() { printTree(root, 1); }
+	
+	// print nodes of tree to stdout
+	public void printTree() { 
+		printTree(root, 1);
+	}
 	private void printTree(Node h, int depth) {
-		if (h == null)
-			System.out.printf("depth:%d h:%s\n", depth, h);
-		else {
+		if (h != null) {
 			System.out.printf("depth:%d x:%f y:%f\n", depth, h.key.x(), h.key.y());
 			printTree(h.left, depth + 1);
 			printTree(h.right, depth + 1);
@@ -120,79 +129,72 @@ public class KdTree {
 	// all points in the set that are inside the rectangle
 	public Iterable<Point2D> range(RectHV rect) {
 		ArrayList<Point2D> insidePoints = new ArrayList<Point2D>();
-		
-//		for (Point2D storedPoint : tree) {
-//			if (rect.contains(storedPoint)) {
-//				insidePoints.add(storedPoint);
-//			}
-//		}
+		range(root, rect, insidePoints, 1);
 		
 		return insidePoints;
+	}
+	private void range(Node h, RectHV rect, ArrayList<Point2D> insidePoints, int depth) {
+		if(h != null) {
+			if(rect.contains(h.key))
+				insidePoints.add(h.key);
+			if(depth % 2 == 1) {
+				if(rect.xmin() <= h.key.x())
+					range(h.left, rect, insidePoints, depth + 1);
+				if(rect.xmax() >= h.key.x())
+					range(h.right, rect, insidePoints, depth + 1);
+			} else {
+				if(rect.ymin() <= h.key.y())
+					range(h.left, rect, insidePoints, depth + 1);
+				if(rect.ymax() >= h.key.y())
+					range(h.right, rect, insidePoints, depth + 1);
+			}
+		}
 	}
 
 	// a nearest neighbor in the set to p; null if set is empty
 	public Point2D nearest(Point2D p) {
-		Point2D closestPoint = null;
-		
-//		for (Point2D storedPoint : tree) {
-//			double dist = p.distanceTo(storedPoint);
-//			if (dist < closestDist) {
-//				closestPoint = storedPoint;
-//				closestDist = dist;
-//			}
-//		}
-		
-		return closestPoint;
+		return nearest(root, p, null, Double.MAX_VALUE, 1);
 	}
-	
-	/**
-	 * Test the nearest neighbor functionality of the PointSET class
-	 */
-	private void testNearestNeighbor() {
-		while(true) {
-			// the location (x, y) of the mouse
-            double x = StdDraw.mouseX();
-            double y = StdDraw.mouseY();
-            Point2D query = new Point2D(x, y);
-
-            // draw all of the points
-            StdDraw.clear();
-            StdDraw.setPenColor(StdDraw.BLACK);
-            StdDraw.setPenRadius(.01);
-            draw();
-
-            // draw in red the nearest neighbor according to the brute-force algorithm
-            StdDraw.setPenRadius(.03);
-            StdDraw.setPenColor(StdDraw.RED);
-            nearest(query).draw();
-            StdDraw.setPenRadius(.02);
-            
-            StdDraw.show(40);
+	private Point2D nearest(Node h, Point2D p, Point2D closestPoint, double closestDist, int depth) {
+		if (h != null) {
+			if(h.key.distanceTo(p) < closestDist) {
+				closestDist = h.key.distanceTo(p);
+				closestPoint = h.key;
+			}
+			
+			double distToRect = depth % 2 == 1 ? h.key.x() - p.x() : h.key.y() - p.y();
+			if(distToRect > 0) {
+				closestPoint = nearest(h.left, p, closestPoint, closestDist, depth + 1);
+				closestPoint = nearest(h.right, p, closestPoint, closestDist, depth + 1);
+			} else {
+				closestPoint = nearest(h.right, p, closestPoint, closestDist, depth + 1);
+				closestPoint = nearest(h.left, p, closestPoint, closestDist, depth + 1);
+			}
+				
 		}
+		return closestPoint;
 	}
 	
 	
 	public static void main(String[] args) {
-		KdTree tree2d = new KdTree();
-		
-		try {
-			BufferedReader infile = new BufferedReader(new FileReader(args[0]));
-			while(infile.ready()) {
-				String[] tokens = infile.readLine().trim().split(" ");
-				Point2D p = new Point2D(Double.parseDouble(tokens[0]), Double.parseDouble(tokens[1]));
-				tree2d.insert(p);
-			}
-			infile.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		KdTree kdtree = new KdTree();
+
+        // initialize the two data structures with point from standard input
+		In in = new In(args[0]);
+		while (!in.isEmpty()) {
+            double x = in.readDouble();
+            double y = in.readDouble();
+            Point2D p = new Point2D(x, y);
+            kdtree.insert(p);
+        }
 		
 		// draw the points
-		//tree2d.testNearestNeighbor();
-		//tree2d.testRangeSearch();
-		tree2d.printTree();
-		tree2d.draw();
+		//kdtree.testNearestNeighbor();
+		//kdtree.testRangeSearch();
+        kdtree.printTree();
+		//kdtree.draw();
+        
+		//RangeSearchVisualizer.main(args);
+		NearestNeighborVisualizer.main(args);
 	}
 }
