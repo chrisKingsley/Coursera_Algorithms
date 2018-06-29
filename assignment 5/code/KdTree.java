@@ -150,28 +150,49 @@ public class KdTree {
 			}
 		}
 	}
-
+	
+	private double distToNode(Point2D p, double minX, double minY, double maxX, double maxY) {
+		double dx = 0.0, dy = 0.0;
+        if      (p.x() < minX) dx = p.x() - minX;
+        else if (p.x() > maxX) dx = p.x() - maxX;
+        if      (p.y() < minY) dy = p.y() - minY;
+        else if (p.y() > maxY) dy = p.y() - maxY;
+        return dx*dx + dy*dy;
+	}
+	
 	// a nearest neighbor in the set to p; null if set is empty
 	public Point2D nearest(Point2D p) {
-		return nearest(root, p, null, Double.MAX_VALUE, 1);
+		return nearest(root, p, null, 1, 0.0, 0.0, 1.0, 1.0);
 	}
-	private Point2D nearest(Node h, Point2D p, Point2D closestPoint, double closestDist, int depth) {
+	private Point2D nearest(Node h, Point2D p, Point2D closestPoint, int depth,
+			double minX, double minY, double maxX, double maxY) {
 		if (h != null) {
+			double closestDist = closestPoint == null ? Double.MAX_VALUE : p.distanceTo(closestPoint);
+			
+			// exit if closest distance is closer than point p to node
+			if (closestDist < distToNode(p, minX, minY, maxX, maxY))
+				return closestPoint;
+			
+			// update closestPoint if current point is closer
 			if(h.key.distanceTo(p) < closestDist) {
 				closestDist = h.key.distanceTo(p);
 				closestPoint = h.key;
 			}
 			
-			double distToRect = depth % 2 == 1 ? h.key.x() - p.x() : h.key.y() - p.y();
-			if(distToRect > 0) {
-				closestPoint = nearest(h.left, p, closestPoint, closestDist, depth + 1);
-				closestPoint = nearest(h.right, p, closestPoint, closestDist, depth + 1);
-			} else {
-				closestPoint = nearest(h.right, p, closestPoint, closestDist, depth + 1);
-				closestPoint = nearest(h.left, p, closestPoint, closestDist, depth + 1);
+			
+			int cmp = comparePoints(h.key, p, depth);
+//			System.out.println("cmp:" + cmp + " current:" + h.key.toString() + " closest:" + closestPoint.toString() +
+//					" bestDist:" + closestDist + " depth:" + depth + " distToRect:" + distToRect);
+			
+			if(cmp > 0) {
+				closestPoint = nearest(h.left, p, closestPoint, depth + 1, minX, minY, maxX, maxY);
+				closestPoint = nearest(h.right, p, closestPoint, depth + 1, minX, minY, maxX, maxY);
+			} else if(cmp < 0) {
+				closestPoint = nearest(h.right, p, closestPoint, depth + 1, minX, minY, maxX, maxY);
+				closestPoint = nearest(h.left, p, closestPoint, depth + 1, minX, minY, maxX, maxY);
 			}
-				
 		}
+		
 		return closestPoint;
 	}
 	
