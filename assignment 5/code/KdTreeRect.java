@@ -1,16 +1,16 @@
 import java.util.ArrayList;
 
-public class KdTree {
-	
+public class KdTreeRect {
 	private Node root;
 	
 	// construct an empty set of points
-	public KdTree() {}
+	public KdTreeRect() {}
 
 	private class Node  {
 		Point2D key; // key
 		Node left, right; // subtrees
 		int N; // # nodes in this subtree
+		RectHV rect;
 		
 		// parent to this node
 		Node(Point2D p, int N)
@@ -230,5 +230,6 @@ public class KdTree {
 		//RangeSearchVisualizer.main(args);
 		//NearestNeighborVisualizer.main(args);
 		KdTreeVisualizer.main(args);
+		TreeTests.nearestNeighborTimer();
 	}
 }
