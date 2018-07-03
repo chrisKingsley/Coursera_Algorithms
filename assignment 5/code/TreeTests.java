@@ -110,7 +110,7 @@ public class TreeTests {
 			}
 			double rectTime = (System.currentTimeMillis() - startTime)/1000.0;
 					
-			// get nearest neighbor from kd tree
+			// get nearest neighbor from kd tree using point based implementation
 			startTime = System.currentTimeMillis();
 			for (int i = 0; i < NUM_SEARCHES; i++) {
 				double x = Math.random();
@@ -121,6 +121,7 @@ public class TreeTests {
 			double pointTime = (System.currentTimeMillis() - startTime)/1000.0;
 			
 			System.out.printf("%d\t%f\t%f\n", numPoints, rectTime, pointTime);
+			
 		}
 	}
 	
@@ -169,7 +170,7 @@ public class TreeTests {
 	
 	
 	// run time analysis for range search in red/black vs. kd tree
-	public static void rangeSearchTimeComparison() {
+	public static void rangeSearchTimer_RedBlack_vs_KdTree() {
 		System.out.println("numPoints\tbrute_time\tkdTree_time");
 		
 		for (int numPoints = 100; numPoints <= 10000; numPoints += 100) {
@@ -192,7 +193,7 @@ public class TreeTests {
 	            double y1 = Math.random(), y2 = Math.random();
 	            RectHV rect = new RectHV(Math.min(x1,x2), Math.min(y1,y2), Math.max(x1,x2), Math.max(y1,y2));
 	            
-	            Iterable<Point2D> bruteSet = brute.range(rect);
+	            brute.range(rect);
 			}
 			double bruteTime = (System.currentTimeMillis() - startTime)/1000.0;
 			
@@ -202,7 +203,7 @@ public class TreeTests {
 	            double y1 = Math.random(), y2 = Math.random();
 	            RectHV rect = new RectHV(Math.min(x1,x2), Math.min(y1,y2), Math.max(x1,x2), Math.max(y1,y2));
 	            
-	            Iterable<Point2D> kdTreeSet = kdTree.range(rect);
+	            kdTree.range(rect);
 			}
 			double kdTime = (System.currentTimeMillis() - startTime)/1000.0;
 			System.out.printf("%d\t%f\t%f\n", numPoints, bruteTime, kdTime);
@@ -211,11 +212,12 @@ public class TreeTests {
 	
 	
 	// run time analysis for range search in kd tree
-	public static void rangeSearchTimer() {
-		System.out.println("numPoints\tkdTree_time");
+	public static void rangeSearchTimer_KdTree_points_vs_rect() {
+		System.out.println("numPoints\tkdTree_time\tkdTreePoint_time");
 		
-		for (int numPoints = 1000; numPoints <= 100000; numPoints += 1000) {
+		for (int numPoints = 100; numPoints <= 10000; numPoints += 100) {
 			KdTree kdTree = new KdTree();
+			KdTreePoints kdTreePoint = new KdTreePoints();
 			
 			// add points
 			for (int i=0; i < numPoints; i++) {
@@ -223,17 +225,30 @@ public class TreeTests {
 	            double y = Math.random();
 	            Point2D p = new Point2D(x, y);
 	            kdTree.insert(p);
+	            kdTreePoint.insert(p);
 			}
 			
+			// timer for range search
 			long startTime = System.currentTimeMillis();
 			for (int i = 0; i < NUM_SEARCHES; i++) {
 				double x1 = Math.random(), x2 = Math.random();
 	            double y1 = Math.random(), y2 = Math.random();
 	            RectHV rect = new RectHV(Math.min(x1,x2), Math.min(y1,y2), Math.max(x1,x2), Math.max(y1,y2));
 	            
-	            Iterable<Point2D> kdTreeSet = kdTree.range(rect);
+	            kdTreePoint.range(rect);
 			}
-			System.out.printf("%d\t%f\n", numPoints, (System.currentTimeMillis() - startTime)/1000.0);
+			double pointTime = (System.currentTimeMillis() - startTime)/1000.0;
+			
+			startTime = System.currentTimeMillis();
+			for (int i = 0; i < NUM_SEARCHES; i++) {
+				double x1 = Math.random(), x2 = Math.random();
+	            double y1 = Math.random(), y2 = Math.random();
+	            RectHV rect = new RectHV(Math.min(x1,x2), Math.min(y1,y2), Math.max(x1,x2), Math.max(y1,y2));
+	            
+	            kdTree.range(rect);
+			}
+			double kdTime = (System.currentTimeMillis() - startTime)/1000.0;
+			System.out.printf("%d\t%f\t%f\n", numPoints, kdTime, pointTime);
 		}
 	}
 	
@@ -243,9 +258,8 @@ public class TreeTests {
 //		nearestNeighborTimer_KdTree_points_vs_rect();
 		
 //		rangeSearchAccuracy(args[0]);
-		
-		
-		
+//		rangeSearchTimer_RedBlack_vs_KdTree();
+		rangeSearchTimer_KdTree_points_vs_rect();
 	}
 
 }

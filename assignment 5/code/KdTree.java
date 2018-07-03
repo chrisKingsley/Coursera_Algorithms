@@ -1,21 +1,20 @@
 import java.util.ArrayList;
 
-// class representing a Kd tree
+// class representing a Kd tree, using rectangles in the node
 public class KdTree {
 
 	private Node root;
 	private double closestDist;
 
 	// private class representing a node in the tree
-	private class Node  {
+	class Node {
 		Point2D key; // key
 		Node left, right; // subtrees
 		int N; // # nodes in this subtree
 		RectHV rect;
 		
 		// parent to this node
-		Node(Point2D p, RectHV rect, int N)
-		{
+		Node(Point2D p, RectHV rect, int N) {
 			this.key = p;
 			this.N = N;
 			this.rect = rect;
@@ -43,10 +42,10 @@ public class KdTree {
 	
 	
 	// compare points, with depth in the tree determining which dimension to use
-	private int comparePoints(Point2D h, Point2D p, int depth) {
+	private int comparePoints(Point2D h, Point2D p, boolean useX) {
 		int cmpX = Double.compare(h.x(), p.x()),
 				cmpY = Double.compare(h.y(), p.y());
-		if (depth % 2 == 1)
+		if (useX)
 			return cmpX != 0.0 ? cmpX : cmpY;
 		else
 			return cmpY != 0.0 ? cmpY : cmpX;
@@ -55,19 +54,19 @@ public class KdTree {
 	
 	// add the point p to the set (if it is not already in the set)
 	public void insert(Point2D p) {
-		root = insert(root, p, 1);
+		root = insert(root, p, true);
 	}
-	private Node insert(Node h, Point2D p, int depth) {
-		// Insert new node
+	private Node insert(Node h, Point2D p, boolean useX) {
+		// Insert new node if at end of tree
 		if (h == null)
-			return new Node(p, new RectHV(p.x(),p.y(),p.x(),p.y()), depth);
+			return new Node(p, new RectHV(p.x(),p.y(),p.x(),p.y()), 1);
 		
-		// follow left and right nodes
-		int cmp = comparePoints(h.key, p, depth);
+		// recursively follow left and right nodes
+		int cmp = comparePoints(h.key, p, useX);
 		if (cmp > 0)
-			h.left = insert(h.left, p, depth + 1);
+			h.left = insert(h.left, p, !useX);
 		else if (cmp < 0)
-			h.right = insert(h.right, p, depth + 1);
+			h.right = insert(h.right, p, !useX);
 		
 		// update number and rectangle for the node
 		h.N = size(h.left) + size(h.right) + 1;
@@ -80,41 +79,41 @@ public class KdTree {
 	
 	// does the set contain the point p?
 	public boolean contains(Point2D p) {
-		return contains(root, p, 1);
+		return contains(root, p, true);
 	}
-	private boolean contains(Node h, Point2D p, int depth) {
+	private boolean contains(Node h, Point2D p, boolean useX) {
 		if(h == null)
 			return false;
 		else {		
-			int cmp = comparePoints(h.key, p, depth);
+			int cmp = comparePoints(h.key, p, useX);
 			if(cmp == 0)
 				return true;
 			else if(cmp < 0)
-				return contains(h.left, p, depth + 1);
+				return contains(h.left, p, !useX);
 			else
-				return contains(h.right, p, depth + 1);	
+				return contains(h.right, p, !useX);	
 		}
 	}
 
 	
 	// draw all of the points to standard draw
 	public void draw() {
-		draw(root, 1, 0.0, 0.0, 1.0, 1.0);
+		draw(root, true, 0.0, 0.0, 1.0, 1.0);
 	}
-	public void draw(Node h, int depth, double minX, double minY, double maxX, double maxY) {
+	public void draw(Node h, boolean useX, double minX, double minY, double maxX, double maxY) {
 		if (h != null) {
 			// draw lines
 			StdDraw.setPenRadius(.01);
-			if (depth % 2 == 1) {
+			if (useX) {
 				StdDraw.setPenColor(StdDraw.RED);
 				StdDraw.line(h.key.x(), minY, h.key.x(), maxY);
-				draw(h.left, depth + 1, minX, minY, h.key.x(), maxY);
-				draw(h.right, depth + 1, h.key.x(), minY, maxX, maxY);
+				draw(h.left, !useX, minX, minY, h.key.x(), maxY);
+				draw(h.right, !useX, h.key.x(), minY, maxX, maxY);
 			} else {
 				StdDraw.setPenColor(StdDraw.BLUE);
 				StdDraw.line(minX, h.key.y(), maxX, h.key.y());
-				draw(h.left, depth + 1, minX, minY, maxX, h.key.y());
-				draw(h.right, depth + 1, minX, h.key.y(), maxX, maxY);
+				draw(h.left, !useX, minX, minY, maxX, h.key.y());
+				draw(h.right, !useX, minX, h.key.y(), maxX, maxY);
 			}
 			
 			// plot points
@@ -123,6 +122,7 @@ public class KdTree {
 	        h.key.draw();
 		}
 	}
+	
 	
 	// print nodes of tree to stdout
 	public void printTree() { 
@@ -158,9 +158,9 @@ public class KdTree {
 	// a nearest neighbor in the set to p; null if set is empty
 	public Point2D nearest(Point2D p) {
 		closestDist = Double.MAX_VALUE;
-		return nearest(root, p, null, 1);
+		return nearest(root, p, null, true);
 	}
-	private Point2D nearest(Node h, Point2D p, Point2D closestPoint, int depth) {
+	private Point2D nearest(Node h, Point2D p, Point2D closestPoint, boolean useX) {
 		if (h != null && h.rect.distanceTo(p) < closestDist) {
 			
 			// update closestPoint if current point is closer
@@ -169,43 +169,18 @@ public class KdTree {
 				closestPoint = h.key;
 			}
 			
-			int cmp = comparePoints(h.key, p, depth);
+			// recursively search the subtrees
+			int cmp = comparePoints(h.key, p, useX);
 			if (cmp > 0) {
-				closestPoint = nearest(h.left, p, closestPoint, depth + 1);
-				closestPoint = nearest(h.right, p, closestPoint, depth + 1);
+				closestPoint = nearest(h.left, p, closestPoint, !useX);
+				closestPoint = nearest(h.right, p, closestPoint, !useX);
 			} else if (cmp < 0) {
-				closestPoint = nearest(h.right, p, closestPoint, depth + 1);
-				closestPoint = nearest(h.left, p, closestPoint, depth + 1);
+				closestPoint = nearest(h.right, p, closestPoint, !useX);
+				closestPoint = nearest(h.left, p, closestPoint, !useX);
 			}
 		}
 		
 		return closestPoint;
-	}
-	
-	
-	public static void main(String[] args) {
-		KdTree kdtree = new KdTree();
-
-        // initialize the two data structures with point from standard input
-//		In in = new In("C:/Users/ckingsley/Desktop/input100.txt");
-//		while (!in.isEmpty()) {
-//            double x = in.readDouble();
-//            double y = in.readDouble();
-//            Point2D p = new Point2D(x, y);
-//            kdtree.insert(p);
-//        }
-		
-//		 draw the points
-//		kdtree.testNearestNeighbor();
-//		kdtree.testRangeSearch();
-//        kdtree.printTree();
-//		kdtree.draw();
-		
-        
-		//RangeSearchVisualizer.main(args);
-		NearestNeighborVisualizer.main(args);
-//		KdTreeVisualizer.main(args);
-//		TreeTests.nearestNeighborTimer();
 	}
 }
 
