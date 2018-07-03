@@ -1,16 +1,14 @@
 import java.util.ArrayList;
 
-public class KdTreeRect {
-	private Node root;
+public class KdTreePoints {
 	
-	// construct an empty set of points
-	public KdTreeRect() {}
+	private Node root;
+	private double closestDist;
 
 	private class Node  {
 		Point2D key; // key
 		Node left, right; // subtrees
 		int N; // # nodes in this subtree
-		RectHV rect;
 		
 		// parent to this node
 		Node(Point2D p, int N)
@@ -162,13 +160,12 @@ public class KdTreeRect {
 	
 	// a nearest neighbor in the set to p; null if set is empty
 	public Point2D nearest(Point2D p) {
+		closestDist = Double.MAX_VALUE;
 		return nearest(root, p, null, 1, 0.0, 0.0, 1.0, 1.0);
 	}
 	private Point2D nearest(Node h, Point2D p, Point2D closestPoint, int depth,
 			double minX, double minY, double maxX, double maxY) {
 		if (h != null) {
-			double closestDist = closestPoint == null ? Double.MAX_VALUE : p.distanceTo(closestPoint);
-			
 			// exit if closest distance is closer than point p to node
 			if (closestDist < distToNode(p, minX, minY, maxX, maxY))
 				return closestPoint;
@@ -209,7 +206,7 @@ public class KdTreeRect {
 	
 	
 	public static void main(String[] args) {
-		KdTree kdtree = new KdTree();
+		KdTreePoints kdtree = new KdTreePoints();
 
 //        // initialize the two data structures with point from standard input
 //		In in = new In(args[0]);
@@ -230,6 +227,5 @@ public class KdTreeRect {
 		//RangeSearchVisualizer.main(args);
 		//NearestNeighborVisualizer.main(args);
 		KdTreeVisualizer.main(args);
-		TreeTests.nearestNeighborTimer();
 	}
 }

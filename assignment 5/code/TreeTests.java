@@ -43,7 +43,7 @@ public class TreeTests {
 	
 	
 	// run time analysis for nearest neighbor search in red/black vs. kd tree
-	public static void nearestNeighborTimeComparison() {
+	public static void nearestNeighborTimer_RedBlack_vs_KdTree() {
 		System.out.println("numPoints\tbrute_time\tkdTree_time");
 		
 		for (int numPoints = 10000; numPoints <= 1000000; numPoints += 10000) {
@@ -83,11 +83,13 @@ public class TreeTests {
 	
 	
 	// run time analysis for nearest neighbor search in kd tree
-	public static void nearestNeighborTimer() {
-		System.out.println("numPoints\tkdTree_time");
+	public static void nearestNeighborTimer_KdTree_points_vs_rect() {
+		long startTime;
+		System.out.println("numPoints\tkdTree_time\tkdTreePoint_time");
 		
 		for (int numPoints = 10000; numPoints <= 1000000; numPoints += 10000) {
 			KdTree kdTree = new KdTree();
+			KdTreePoints kdTreePoint = new KdTreePoints();
 			
 			// add points
 			for (int i=0; i < numPoints; i++) {
@@ -95,17 +97,30 @@ public class TreeTests {
 	            double y = Math.random();
 	            Point2D p = new Point2D(x, y);
 	            kdTree.insert(p);
+	            kdTreePoint.insert(p);
 			}
 			
 			// get nearest neighbor from kd tree
-			long startTime = System.currentTimeMillis();
+			startTime = System.currentTimeMillis();
 			for (int i = 0; i < NUM_SEARCHES; i++) {
 				double x = Math.random();
 	            double y = Math.random();
 	            Point2D p = new Point2D(x, y);
 	            kdTree.nearest(p);
 			}
-			System.out.printf("%d\t%f\n", numPoints, (System.currentTimeMillis() - startTime)/1000.0);
+			double rectTime = (System.currentTimeMillis() - startTime)/1000.0;
+					
+			// get nearest neighbor from kd tree
+			startTime = System.currentTimeMillis();
+			for (int i = 0; i < NUM_SEARCHES; i++) {
+				double x = Math.random();
+	            double y = Math.random();
+	            Point2D p = new Point2D(x, y);
+	            kdTreePoint.nearest(p);
+			}
+			double pointTime = (System.currentTimeMillis() - startTime)/1000.0;
+			
+			System.out.printf("%d\t%f\t%f\n", numPoints, rectTime, pointTime);
 		}
 	}
 	
@@ -223,7 +238,14 @@ public class TreeTests {
 	}
 	
 	public static void main(String[] args) {
-		rangeSearchTimer();
+//		nearestNeighborAccuracy(args[0]);
+//		nearestNeighborTimer_RedBlack_vs_KdTree();
+//		nearestNeighborTimer_KdTree_points_vs_rect();
+		
+//		rangeSearchAccuracy(args[0]);
+		
+		
+		
 	}
 
 }
